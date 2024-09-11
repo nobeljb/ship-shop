@@ -82,7 +82,7 @@ http://nobel-julian-shipshop.pbp.cs.ui.ac.id
 
 ## Bagan Request Client ke Web Aplikasi Django
 
- Client-->|Request| URLs.py-->|Route| Views.py-->|Query| Models.py-->|Data| Views.py-->|Render| Template.html-->|Response| Client
+![Bagan Django](https://github.com/user-attachments/assets/2fd8c1d2-c612-4065-8728-d15559054da5)
 
 Penjelasan Bagan:
 Client: Mengirimkan request ke server.
