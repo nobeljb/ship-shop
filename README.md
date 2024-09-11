@@ -61,7 +61,7 @@ http://nobel-julian-shipshop.pbp.cs.ui.ac.id
         return render(request, "main.html", context)
 
 6. **Membuat Routing pada urls.py pada directori main**:
-    - Mengatur urls.py di aplikasi main untuk memetakan fungsi show_main dari views.py.
+    - Mengatur urls.py di aplikasi main untuk memetakan fungsi show_main dari views.py. dengan detail kode sebagai berikut.
 
     ```python
     from django.urls import path
@@ -73,3 +73,36 @@ http://nobel-julian-shipshop.pbp.cs.ui.ac.id
         path('', show_main, name='show_main'),
     ]
 
+7. **Melakukan Deployment ke PWS**:
+    - Mengakses PWS https://pbp.cs.ui.ac.id/
+    - Buat proyek baru, dan simpan credetials
+    - Tambahkan ALLOWED_HOST pada setting.py dengan URL deployment PWS nobel-julian-shipshop.pbp.cs.ui.ac.id
+    - Lalu git add, commit, dan push baik ke PWS maupun github
+
+
+## Bagan Request Client ke Web Aplikasi Django
+
+ Client-->|Request| URLs.py-->|Route| Views.py-->|Query| Models.py-->|Data| Views.py-->|Render| Template.html-->|Response|---|
+ ^---------------------------------------------------------------------------------------------------------------------------|
+
+Penjelasan Bagan:
+Client: Mengirimkan request ke server.
+URLs.py: Menerima request dan menentukan view mana yang akan dipanggil berdasarkan URL.
+Views.py: Mengambil data yang diperlukan dari model dan memprosesnya.
+Models.py: Berinteraksi dengan database untuk mengambil atau menyimpan data.
+Template.html: Menggunakan data dari view untuk menghasilkan HTML yang akan dikirim kembali ke client.
+
+## Fungsi Git dalam Pengembangan Perangkat Lunak
+
+Terdapat beberapa fungsi utama yaitu:
+- Version Control: Melacak setiap perubahan yang dilakukan pada kode, jadi dapat diketahui dengan pasti kapan perubahan terjadi dan memungkinkan developer untuk kembali ke versi sebelumnya jika diperlukan.
+- Collaboration: Untuk sekarang fungsi ini belum digunakan saat pengerjaan tugas 2 ini, akan tetapi nanti akan memungkinkan beberapa ataupun banyak developer untuk bekerja pada proyek yang sama secara bersamaan tanpa konflik (semoga tugas-tugas selanjutnya berlangsung tanpa konflik).
+- Branching and Merging: Memungkinkan developer untuk membuat cabang (branch) dari kode utama untuk mengembangkan fitur baru atau memperbaiki bug, dan kemudian menggabungkannya kembali (merge) ke cabang utama setelah selesai.
+
+## Mengapa Django Dijadikan Permulaan Pembelajaran Pengembangan Perangkat Lunak
+
+Karena Django framework web yang menggunakan bahasa pemrograman Python, kenapa Python digunakan sebab bahasa pemrograman ini terkenal akan kesederhanaanya, kemudahan pembacaan kode, dan kemampuannya untuk menangani berbagai tugas dengan efisien. Django juga menyediakan fitur bawaan yang memudahkan pengembangan, serta komunitas Django yang besar sehingga banyak sumber-sumber yang dapat dimanfaatkan pemula.
+
+## Mengapa model pada Django disebut sebagai ORM
+
+Model pada Django disebut sebagai ORM (Object-Relational Mapping) karena beberapa alasan utama. Pertama, ORM memungkinkan pengembang untuk berinteraksi dengan database menggunakan objek Python, tanpa perlu menulis query SQL secara langsung. Ini membuat kode lebih mudah dibaca dan dipelihara. ORM memetakan tabel dalam database ke kelas Python, dan baris dalam tabel ke objek dari kelas tersebut. Setiap atribut dalam kelas Python sesuai dengan kolom dalam tabel database. Selain itu, ORM menyediakan metode untuk membuat, membaca, memperbarui, dan menghapus data dalam database dengan cara yang lebih intuitif dan aman. Misalnya, Anda bisa menggunakan metode seperti `.save()`, `.filter()`, dan `.delete()` untuk mengelola data. Dengan menggunakan ORM, risiko kesalahan seperti SQL Injection dapat diminimalkan karena ORM secara otomatis menangani sanitasi input. Terakhir, ORM membuat aplikasi lebih portabel karena Anda bisa mengganti backend database tanpa perlu mengubah kode Python secara signifikan. Django ORM mendukung berbagai database seperti SQLite, PostgreSQL, MySQL, dan Oracle. Dengan ORM, pengembangan aplikasi menjadi lebih efisien dan aman, serta memudahkan pengelolaan data dalam database.
