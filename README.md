@@ -82,14 +82,14 @@ http://nobel-julian-shipshop.pbp.cs.ui.ac.id
 
 ## Bagan Request Client ke Web Aplikasi Django
 
-![Bagan Django](https://github.com/user-attachments/assets/2fd8c1d2-c612-4065-8728-d15559054da5)
+![Bagan Django](https://github.com/user-attachments/assets/e365b002-4edc-4e59-8eeb-24e037d4f65e)
 
 Penjelasan Bagan:
-- Client: Mengirimkan request ke server.
-- URLs.py: Menerima request dan menentukan view mana yang akan dipanggil berdasarkan URL.
-- Views.py: Mengambil data yang diperlukan dari model dan memprosesnya.
-- Models.py: Berinteraksi dengan Database untuk mengambil atau menyimpan data.
-- Template.html: Menggunakan data dari view untuk menghasilkan HTML yang akan dikirim kembali ke client.
+- client: Mengirimkan request ke server.
+- urls.py: Menerima request dan menentukan view mana yang akan dipanggil berdasarkan URL.
+- views.py: Mengambil data yang diperlukan dari model dan memprosesnya.
+- models.py: Berinteraksi dengan Database untuk mengambil atau menyimpan data.
+- main.html: Menggunakan data dari view untuk menghasilkan HTML yang akan dikirim kembali ke client.
 
 ## Fungsi Git dalam Pengembangan Perangkat Lunak
 
