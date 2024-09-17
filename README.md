@@ -105,3 +105,21 @@ Karena Django framework web yang menggunakan bahasa pemrograman Python, kenapa P
 ## Mengapa model pada Django disebut sebagai ORM
 
 Model pada Django disebut sebagai ORM (Object-Relational Mapping) karena beberapa alasan utama. Pertama, ORM memungkinkan pengembang untuk berinteraksi dengan database menggunakan objek Python, tanpa perlu menulis query SQL secara langsung. Ini membuat kode lebih mudah dibaca dan dipelihara. ORM memetakan tabel dalam database ke kelas Python, dan baris dalam tabel ke objek dari kelas tersebut. Setiap atribut dalam kelas Python sesuai dengan kolom dalam tabel database. Selain itu, ORM menyediakan metode untuk membuat, membaca, memperbarui, dan menghapus data dalam database dengan cara yang lebih intuitif dan aman. Misalnya, Anda bisa menggunakan metode seperti `.save()`, `.filter()`, dan `.delete()` untuk mengelola data. Dengan menggunakan ORM, risiko kesalahan seperti SQL Injection dapat diminimalkan karena ORM secara otomatis menangani sanitasi input. Terakhir, ORM membuat aplikasi lebih portabel karena Anda bisa mengganti backend database tanpa perlu mengubah kode Python secara signifikan. Django ORM mendukung berbagai database seperti SQLite, PostgreSQL, MySQL, dan Oracle. Dengan ORM, pengembangan aplikasi menjadi lebih efisien dan aman, serta memudahkan pengelolaan data dalam database.
+
+## Mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+
+Data delivery penting untuk memastikan bahwa data dapat diakses dan digunakan oleh berbagai komponen dalam platform, termasuk frontend, backend, dan layanan pihak ketiga. Ini memungkinkan integrasi yang mulus dan pengalaman pengguna yang lebih baik.
+
+## Mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+
+JSON lebih baik dalam hal kesederhanaan dan efisiensi. JSON lebih populer karena lebih mudah dibaca dan ditulis oleh manusia, serta lebih ringan dan cepat diproses oleh mesin dibandingkan XML.
+
+## Fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+
+Method `is_valid()` digunakan untuk memeriksa apakah data yang dimasukkan ke dalam form sesuai dengan aturan validasi yang telah ditentukan. Kita membutuhkan method ini untuk memastikan bahwa data yang disimpan ke dalam database adalah valid dan tidak menyebabkan error.
+
+## Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+
+CSRF token digunakan untuk melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF). Jika kita tidak menambahkan CSRF token, penyerang dapat mengirimkan permintaan palsu atas nama pengguna yang sah, yang dapat menyebabkan tindakan yang tidak diinginkan seperti perubahan data atau pencurian informasi.
+
+## Implementasi Checklist
