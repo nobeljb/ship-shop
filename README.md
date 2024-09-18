@@ -168,4 +168,111 @@ CSRF token digunakan untuk melindungi aplikasi dari serangan Cross-Site Request 
         return render(request, "main.html", context)
 10. Import fungsi create_product ke urls.py pada direktori main, sebagai berikut `from main.views import show_main, create_product`
 11. Menambahkan path URL ke variabel urlpatterns yang ada pada urls.py agar bisa mengakses fungsi yang telah diimport, sebagai berikut `path('create-mood-entry', create_product, name='create_product'),`
-12. 
+12. Buat berkas HTML `create_product.html` pada direktori main/templates, isi sebagai berikut
+    ```html
+    {% extends 'base.html' %} 
+    {% block content %}
+    <h1>Add New Product</h1>
+
+    <form method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+        <td></td>
+        <td>
+            <input type="submit" value="Add Product" />
+        </td>
+        </tr>
+    </table>
+    </form>
+
+    {% endblock %}
+13. Menambahkan isi main.html dengan daftar product dan tombol add new product yang redirect ke halaman create_product, sebagai berikut
+    ```html
+    {% extends 'base.html' %}
+    {% block content %}
+
+    <h1>{{ appname }}</h1>
+
+    <h4>Name: {{ name }}</h4>
+    <h4>Class: {{ class }}</h4>
+
+    {% if not product %}
+    <p>Belum ada product pada ship shop.</p>
+    {% else %}
+    <table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product_ship in product %}
+        <tr>
+        <td>{{ product_ship.name }}</td>
+        <td>{{ product_ship.price }}</td>
+        <td>{{ product_ship.description }}</td>
+        <td>{{ product_ship.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    {% endif %}
+
+    <br />
+
+    <a href="{% url 'main:create_product' %}">
+    <button class="btn btn-primary">Add New Product</button>
+    </a>
+
+    {% endblock content %}
+14. Mengembalikan Data dalam bentuk XML dan JSON
+    - import HttpResponse dan Serializer pada views.py, sebagai berikut
+        ```python
+        from django.http import HttpResponse
+        from django.core import serializers
+    - buat fungsi show_xml, show_json, show_xml_by_id, dan show_json_by_id pada views.py. sebagai berikut
+        ```python
+        def show_xml(request):
+            data = Product.objects.all()
+            return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+        def show_json(request):
+            data = Product.objects.all()
+            return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+        def show_xml_by_id(request, id):
+            data = Product.objects.filter(pk=id)
+            return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+        def show_json_by_id(request, id):
+            data = Product.objects.filter(pk=id)
+            return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    - import semua fungsi ke urls.py
+        ```python
+        from main.views import show_main, create_product, show_xml, show_json, show_xml_by_id, show_json_by_id
+    - tambahkan semua path url ke urlpatterns, sehingga isi urlpatternsnya sebagai berikut
+        ```python
+        urlpatterns = [
+            path('', show_main, name='show_main'),
+            path('create-product', create_product, name='create_product'),
+            path('xml/', show_xml, name='show_xml'),
+            path('json/', show_json, name='show_json'),
+            path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
+            path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+        ]
+    - cek semua berjalan dengan baik
+
+## Mengakses URL
+1. /xml
+![Screenshot 2024-09-18 091053](https://github.com/user-attachments/assets/4d9343f1-c162-41bc-a850-d7f6d7616ef9)
+2. /json
+![Screenshot 2024-09-18 091014](https://github.com/user-attachments/assets/408be6de-e2eb-4f51-b818-9aa21972c257)
+3. /xml/:id
+![Screenshot 2024-09-18 103306](https://github.com/user-attachments/assets/276be38f-e83c-43b4-ab49-81743a7c7d33)
+4. /json/:id
+![Screenshot 2024-09-18 103323](https://github.com/user-attachments/assets/67006c70-8df2-4598-9f4f-ff80351dbaec)
