@@ -123,3 +123,48 @@ Method `is_valid()` digunakan untuk memeriksa apakah data yang dimasukkan ke dal
 CSRF token digunakan untuk melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF). Jika kita tidak menambahkan CSRF token, penyerang dapat mengirimkan permintaan palsu atas nama pengguna yang sah, yang dapat menyebabkan tindakan yang tidak diinginkan seperti perubahan data atau pencurian informasi.
 
 ## Implementasi Checklist
+1. Buatlah folder bernama templates di direktori utama (root folder) dan buat file HTML baru dengan nama base.html. File base.html ini akan berfungsi sebagai template dasar yang dapat digunakan sebagai kerangka umum untuk halaman web lainnya dalam proyek.
+2. Mengisi settings.py pada direktori proyek dengan `'DIRS': [BASE_DIR / 'templates'],` agar django mencari template pada direktori templates
+3. Jadikan base.html template utama pada template lainnya
+4. Mengubah Primary Key menjadi UUID pada object Product `id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)`
+5. Dan migrasi modelnya
+6. Membuat forms.py didalam direktori main agar dapat menerima data Product baru, sebagai berikut.
+    ```python
+    from django.forms import ModelForm
+    from main.models import Product
+
+    class ProductForm(ModelForm):
+        class Meta:
+            model = Product
+            fields = ["name", "price", "description", "quantity"]
+7. Mengimpor beberapa fungsi dan kelas penting dari Django dan aplikasi main. Fungsi render dan redirect dari django.shortcuts digunakan untuk merender template HTML dan mengarahkan pengguna ke URL lain. ProductForm dari main.forms adalah formulir yang digunakan untuk membuat atau memperbarui objek Product, sementara Product dari main.models adalah model yang mewakili tabel dalam basis data yang menyimpan informasi produk.
+    ```python
+    from django.shortcuts import render, redirect
+    from main.forms import ProductForm
+    from main.models import Product
+8. Lalu membuat Fungsi create_product pada views.py yang menangani pembuatan produk baru dengan menampilkan formulir ProductForm, memvalidasi data yang dikirimkan melalui metode POST, menyimpan data ke dalam basis data jika valid, dan mengarahkan pengguna ke halaman utama setelah operasi berhasil. Jika formulir tidak valid atau metode bukan POST, fungsi ini akan merender template create_product.html dengan formulir yang ada. sebagai berikut.
+    ```python
+    def create_product(request):
+        form = ProductForm(request.POST or None)
+
+        if form.is_valid() and request.method == "POST":
+            form.save()
+            return redirect('main:show_main')
+
+        context = {'form': form}
+        return render(request, "create_product.html", context)
+9. Mengubah fungsi show_main pada file yang sama, dengan menambahkan daftar product, sebagai berikut.
+    ```python
+    def show_main(request):
+        product_ship = Product.objects.all()
+
+        context = {
+            'appname': 'Ship Shop',
+            'name': 'Nobel Julian Bintang',
+            'class': 'PBP F',
+            'product': product_ship
+        }
+
+        return render(request, "main.html", context)
+10. Import fungsi create_product ke urls.py pada direktori main, sebagai berikut `from main.views import show_main, create_mood_entry`
+11. Menambahkan path URL ke variabel urlpatterns
