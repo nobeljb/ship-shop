@@ -11,7 +11,7 @@ http://nobel-julian-shipshop.pbp.cs.ui.ac.id
     - Menjalankan perintah `git init` untuk nanti mengunggah ship-shop ke repositori github
     - Buat dan mengaktifkan virtual environment dengan `py -m venv env` dan `env\Scripts\activate`
     - Menyiapkan dan instalasi komponen yang diperlukan atau Dependencies, dengan membuat file requirements.txt dan menjalankan perintah `pip install -r requirements.txt`
-    - Membuat proyek Django bernama ship_shop dengan perintah `django-admin startproject mental_health_tracker .`
+    - Membuat proyek Django bernama ship_shop dengan perintah `django-admin startproject ship_shop .`
     - Konfigurasi proyek dan mencoba menjalankan server dengan mengisi ALLOWED_HOST pada setting.py dengan `"localhost", "127.0.0.1"`, menjalankan perintah 'py manage.py runserver', dan melihat apakah proyek berjalan pada http://localhost:8000/.
    
 2. **Membuat Aplikasi dengan Nama `main`**:
@@ -166,5 +166,6 @@ CSRF token digunakan untuk melindungi aplikasi dari serangan Cross-Site Request 
         }
 
         return render(request, "main.html", context)
-10. Import fungsi create_product ke urls.py pada direktori main, sebagai berikut `from main.views import show_main, create_mood_entry`
-11. Menambahkan path URL ke variabel urlpatterns
+10. Import fungsi create_product ke urls.py pada direktori main, sebagai berikut `from main.views import show_main, create_product`
+11. Menambahkan path URL ke variabel urlpatterns yang ada pada urls.py agar bisa mengakses fungsi yang telah diimport, sebagai berikut `path('create-mood-entry', create_product, name='create_product'),`
+12. 
