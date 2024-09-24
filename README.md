@@ -276,3 +276,169 @@ CSRF token digunakan untuk melindungi aplikasi dari serangan Cross-Site Request 
 ![Screenshot 2024-09-18 103306](https://github.com/user-attachments/assets/276be38f-e83c-43b4-ab49-81743a7c7d33)
 4. /json/:id
 ![Screenshot 2024-09-18 103323](https://github.com/user-attachments/assets/67006c70-8df2-4598-9f4f-ff80351dbaec)
+
+## Perbedaan antara HttpResponseRedirect() dan redirect()
+1. HttpResponseRedirect(): Mengembalikan objek HttpResponse yang mengarahkan ke URL tertentu. Digunakan untuk mengarahkan pengguna ke halaman lain.
+2. redirect(): Fungsi shortcut yang mengembalikan HttpResponseRedirect ke URL yang diberikan. Lebih mudah digunakan karena dapat menerima nama URL atau objek model.
+
+## Cara Kerja Penghubungan Model Product dengan User
+Penghubungan dilakukan dengan menambahkan ForeignKey pada model Product yang mengacu pada model User. Ini memungkinkan setiap produk terkait dengan pengguna tertentu.
+
+## Perbedaan antara Authentication dan Authorization
+1. Authentication: Proses verifikasi identitas pengguna (misalnya, melalui username dan password).
+2. Authorization: Proses menentukan hak akses pengguna setelah mereka terautentikasi.
+Saat login, Django memverifikasi kredensial pengguna (authentication) dan kemudian menentukan hak akses mereka (authorization).
+
+## Bagaimana Django Mengingat Pengguna yang Telah Login
+Django menggunakan sesi dan cookies untuk mengingat pengguna yang telah login. Saat pengguna login, Django membuat sesi dan menyimpan ID sesi dalam cookie di browser pengguna. Cookie ini kemudian digunakan untuk mengidentifikasi pengguna pada setiap permintaan berikutnya.
+
+Cookies dapat digunakan untuk menyimpan preferensi pengguna, melacak aktivitas, dan mengelola sesi. Tidak semua cookies aman, cookies harus dienkripsi dan memiliki atribut keamanan.
+
+## Implementasi Checklist Secara Step-by-Step
+Berikut adalah versi yang lebih singkat dengan penjelasan dan mengganti `mood_entry` menjadi `product`:
+
+**Langkah Membuat Fungsi Registrasi, Login, Logout, dan Pembatasan Akses**
+
+1. **Aktifkan Virtual Environment**.
+2. Buka *views.py* di folder *main*, tambahkan:
+   ```python
+   from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+   from django.contrib import messages
+   from django.contrib.auth import authenticate, login, logout
+   ```
+   - **Penjelasan**: Mengimpor form bawaan Django untuk pembuatan akun, login, dan pesan notifikasi.
+
+3. **Fungsi Registrasi**:
+   ```python
+   def register(request):
+       form = UserCreationForm()
+       if request.method == "POST" and form.is_valid():
+           form.save()
+           messages.success(request, 'Akun berhasil dibuat!')
+           return redirect('main:login')
+       return render(request, 'register.html', {'form': form})
+   ```
+   - **Penjelasan**: Fungsi ini menampilkan form registrasi dan membuat akun baru setelah validasi form.
+
+4. **Template `register.html`**:
+   - Buat file baru dengan form registrasi:
+   ```html
+   <h1>Register</h1>
+   <form method="POST">{% csrf_token %}{{ form.as_table }}<input type="submit" value="Daftar"></form>
+   ```
+
+5. **URL**: Di *urls.py*, tambahkan:
+   ```python
+   path('register/', register, name='register')
+   ```
+   - **Penjelasan**: Menambahkan URL untuk akses halaman registrasi.
+
+6. **Fungsi Login**:
+   ```python
+   def login_user(request):
+       form = AuthenticationForm(data=request.POST or None)
+       if form.is_valid():
+           login(request, form.get_user())
+           return redirect('main:show_main')
+       return render(request, 'login.html', {'form': form})
+   ```
+   - **Penjelasan**: Form login yang memvalidasi pengguna dan melakukan autentikasi.
+
+7. **Template `login.html`**:
+   - Buat file untuk form login:
+   ```html
+   <h1>Login</h1>
+   <form method="POST">{% csrf_token %}{{ form.as_table }}<input type="submit" value="Login"></form>
+   <a href="{% url 'main:register' %}">Register</a>
+   ```
+
+8. **URL**: Di *urls.py*, tambahkan:
+   ```python
+   path('login/', login_user, name='login')
+   ```
+
+9. **Logout**: 
+   - Tambahkan fungsi di *views.py*:
+   ```python
+   def logout_user(request):
+       logout(request)
+       return redirect('main:login')
+   ```
+   - Di *urls.py*, tambahkan:
+   ```python
+   path('logout/', logout_user, name='logout')
+   ```
+   - Di *main.html*, tambahkan tombol:
+   ```html
+   <a href="{% url 'main:logout' %}"><button>Logout</button></a>
+   ```
+   - **Penjelasan**: Fungsi logout untuk keluar dari sesi pengguna.
+
+10. **Restriksi Halaman Utama**: Tambahkan:
+    ```python
+    from django.contrib.auth.decorators import login_required
+
+    @login_required(login_url='/login')
+    def show_main(request):
+        ...
+    ```
+    - **Penjelasan**: Menambahkan pembatasan akses agar hanya pengguna yang login bisa mengakses halaman utama.
+
+11. **Cookies Last Login**: Modifikasi fungsi *login_user*:
+    ```python
+    response = HttpResponseRedirect(reverse('main:show_main'))
+    response.set_cookie('last_login', str(datetime.datetime.now()))
+    return response
+    ```
+    - Tambahkan di *show_main*:
+    ```python
+    'last_login': request.COOKIES.get('last_login', 'Tidak ada data login')
+    ```
+    - **Penjelasan**: Menyimpan informasi terakhir kali pengguna login di *cookies* dan menampilkannya di halaman utama.
+
+12. **Hubungkan Model Product dengan User**:
+    - Di *models.py*, tambahkan:
+    ```python
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ```
+    - **Penjelasan**: Setiap `product` akan dikaitkan dengan pengguna yang membuatnya.
+   
+    - Modifikasi *create_product*:
+    ```python
+    def create_product(request):
+        form = ProductForm(request.POST or None)
+
+        if form.is_valid() and request.method == "POST":
+            product = form.save(commit=False)
+            product.user = request.user
+            product.save()
+            return redirect('main:show_main')
+
+        return render(request, "create_product.html", {'form': form})
+    ```
+    - **Penjelasan**: Setiap produk baru yang dibuat akan otomatis dikaitkan dengan pengguna yang sedang login.
+
+13. **Filter Produk per Pengguna**: Ubah value dari *product* di *show_main*:
+    ```python
+    def show_main(request):
+        products = Product.objects.filter(user=request.user)
+
+        context = {
+            'appname': 'Ship Shop',
+            'name': request.user.username,
+            'class': 'PBP F',
+            'product': product_ship,
+            'last_login': request.COOKIES['last_login'],
+        }
+        return render(request, "main.html", context)
+    ```
+    - **Penjelasan**: Menampilkan hanya produk yang dibuat oleh pengguna yang sedang login.
+
+14. **Migrate**: Jalankan:
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+
+14. **Membuat 2 akun dengan masing-masing 3 dummy data**:
+    Mengakses aplikasi di lokal dan membuat 2 akun serta 3 dummy data untuk setiap akun
