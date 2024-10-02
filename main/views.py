@@ -40,10 +40,10 @@ def create_product(request):
     return render(request, "create_product.html", context)
 
 def edit_product(request, id):
-    # Get mood entry berdasarkan id
+    # Get product berdasarkan id
     product = Product.objects.get(pk = id)
 
-    # Set mood entry sebagai instance dari form
+    # Set product sebagai instance dari form
     form = ProductForm(request.POST or None, instance=product)
 
     if form.is_valid() and request.method == "POST":
@@ -55,9 +55,9 @@ def edit_product(request, id):
     return render(request, "edit_product.html", context)
 
 def delete_product(request, id):
-    # Get mood berdasarkan id
+    # Get product berdasarkan id
     product = Product.objects.get(pk = id)
-    # Hapus mood
+    # Hapus product
     product.delete()
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('main:show_main'))

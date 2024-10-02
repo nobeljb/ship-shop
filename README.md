@@ -442,3 +442,107 @@ Berikut adalah versi yang lebih singkat dengan penjelasan dan mengganti `mood_en
 
 14. **Membuat 2 akun dengan masing-masing 3 dummy data**:
     Mengakses aplikasi di lokal dan membuat 2 akun serta 3 dummy data untuk setiap akun
+
+
+
+## Urutan Prioritas Pengambilan CSS Selector
+    Jika terdapat beberapa CSS selector untuk suatu elemen HTML, urutan prioritas pengambilan CSS selector tersebut adalah sebagai berikut:
+    Inline Styles: CSS yang diterapkan langsung pada elemen HTML menggunakan atribut style.
+    ID Selectors: Selector yang menggunakan ID elemen, misalnya #example.
+    Class, Attribute, dan Pseudo-class Selectors: Selector yang menggunakan kelas, atribut, atau pseudo-class, misalnya .example, [type="text"], :hover.
+    Element dan Pseudo-element Selectors: Selector yang menggunakan nama elemen atau pseudo-element, misalnya div, ::before.
+    Jika dua selector memiliki tingkat prioritas yang sama, yang terakhir didefinisikan dalam CSS akan diterapkan.
+
+## Pentingnya Responsive Design dalam Pengembangan Aplikasi Web
+    Responsive design adalah konsep penting dalam pengembangan aplikasi web karena memungkinkan situs web untuk menyesuaikan tampilannya dengan berbagai ukuran layar dan perangkat. Ini penting karena:
+    - Meningkatkan Pengalaman Pengguna: Pengguna dapat mengakses situs web dengan nyaman di perangkat apa pun, baik itu desktop, tablet, atau ponsel.
+    - SEO yang Lebih Baik: Google memberikan peringkat lebih tinggi untuk situs web yang mobile-friendly.
+    - Efisiensi Pengembangan: Hanya perlu mengembangkan satu versi situs web yang berfungsi di semua perangkat.
+    Contoh Aplikasi yang Menerapkan Responsive Design:
+    - Sudah Menerapkan: Twitter, yang menyesuaikan tata letak dan konten berdasarkan ukuran layar.
+    - Belum Menerapkan: Situs web lama yang hanya dioptimalkan untuk desktop dan memerlukan zooming dan scrolling horizontal pada perangkat mobile.
+
+## Perbedaan antara Margin, Border, dan Padding
+    - Margin:
+        - Definisi: Margin adalah ruang di luar elemen yang memisahkan elemen dari elemen lain di sekitarnya.
+        - Fungsi: Digunakan untuk mengatur jarak antara elemen-elemen di halaman web.
+        - Implementasi:
+        ```css
+        .example {
+            margin: 20px;
+        }
+
+        Kode di atas akan memberikan jarak 20 piksel di semua sisi elemen dengan kelas example.
+
+    - Border:
+        - Definisi: Border adalah garis yang mengelilingi elemen, berada di antara margin dan padding.
+        - Fungsi: Digunakan untuk memberikan batas visual pada elemen.
+        - Implementasi:
+        ```css
+        .example {
+            border: 2px solid black;
+        }
+
+        Kode di atas akan memberikan garis batas berwarna hitam dengan ketebalan 2 piksel di sekitar elemen dengan kelas example.
+
+    - Padding:
+        - Definisi: Padding adalah ruang di dalam elemen antara konten dan border.
+        - Fungsi: Digunakan untuk memberikan ruang di dalam elemen sehingga konten tidak menempel langsung pada border.
+        - Implementasi:
+        ```css
+        .example {
+        padding: 10px;
+        }
+        Kode di atas akan memberikan jarak 10 piksel di semua sisi konten di dalam elemen dengan kelas example.
+
+## Konsep flex box dan grid layout beserta kegunaannya!
+    - Flexbox (Flexible Box Layout) adalah modul CSS yang dirancang untuk tata letak satu dimensi, baik dalam baris maupun kolom. Flexbox sangat berguna untuk mengatur elemen dalam satu arah dan memungkinkan elemen untuk mengembang atau menyusut sesuai kebutuhan ruang yang tersedia1.
+
+        Kegunaan Flexbox:
+        - Penataan Elemen: Flexbox memudahkan penataan elemen dalam satu baris atau kolom.
+        - Responsif: Elemen dapat menyesuaikan ukurannya secara otomatis berdasarkan ruang yang tersedia.
+        - Pengaturan Ruang: Flexbox memungkinkan pengaturan ruang antar elemen dengan properti seperti justify-content dan align-items.
+
+    - Grid Layout adalah modul CSS yang dirancang untuk tata letak dua dimensi, baik dalam baris maupun kolom. Grid Layout sangat berguna untuk membuat tata letak yang lebih kompleks dengan kontrol yang lebih besar atas posisi elemen2.
+
+        Kegunaan Grid Layout:
+        - Tata Letak Kompleks: Grid Layout memungkinkan pembuatan tata letak yang lebih kompleks dan terstruktur.
+        - Responsif: Grid Layout memungkinkan penyesuaian tata letak berdasarkan ukuran layar dengan mudah.
+        - Kontrol Posisi: Grid Layout memberikan kontrol yang lebih besar atas posisi elemen dengan properti seperti grid-template-columns dan grid-template-rows.
+
+    - Flexbox lebih cocok untuk tata letak satu dimensi (baris atau kolom), sedangkan Grid Layout lebih cocok untuk tata letak dua dimensi (baris dan kolom).
+    - Flexbox lebih fleksibel dalam mengatur elemen dalam satu arah, sementara Grid Layout memberikan kontrol yang lebih besar atas posisi elemen dalam dua arah.
+
+## Implementasi Checklist Secara Step-by-Step
+
+
+1. Menambahkan Fitur Edit Product dan Delete Product pada Aplikasi
+    - Menambahkan URL dan View untuk Edit Product:
+        - Pertama, tambahkan URL baru yang akan menangani permintaan untuk mengedit product. URL ini akan mengarahkan pengguna ke halaman edit product.
+        - Buat view yang akan menangani logika untuk mengedit product. View ini akan mengambil data product yang ada, menampilkan form edit, dan menyimpan perubahan yang dilakukan oleh pengguna.
+    - Menambahkan URL dan View untuk Delete Product:
+        - Tambahkan URL baru yang akan menangani permintaan untuk menghapus product. URL ini akan mengarahkan pengguna ke halaman konfirmasi penghapusan product.
+        - Buat view yang akan menangani logika untuk menghapus product. View ini akan memastikan bahwa product yang dipilih benar-benar dihapus dari database setelah pengguna mengonfirmasi penghapusan.
+    - Membuat Template untuk Edit Product:
+        - Buat template HTML yang akan menampilkan form edit product. Form ini akan diisi dengan data product yang ada dan memungkinkan pengguna untuk mengubah informasi product.
+        - Pastikan template ini memiliki elemen-elemen yang diperlukan seperti input field untuk nama, harga, deskripsi, dan kuantitas product.
+    - Menghubungkan URL, View, dan Template:
+        - Pastikan URL yang telah dibuat terhubung dengan view yang sesuai.
+        - Pastikan view yang telah dibuat menggunakan template yang tepat untuk menampilkan form edit dan pesan konfirmasi penghapusan.
+    - Mengintegrasikan dengan Halaman Daftar Product:
+        - Tambahkan tombol edit dan delete pada setiap card product di halaman daftar product. Tombol ini akan mengarahkan pengguna ke URL edit dan delete yang telah dibuat.
+        - Pastikan tombol-tombol ini mudah diakses dan terlihat jelas oleh pengguna.
+
+2. Kustomisasi Halaman Login, Register, dan Tambah Product
+    - Saya telah mendesain ulang halaman login, register, dan tambah product agar lebih menarik dengan menggunakan Tailwind CSS. Setiap halaman kini memiliki tata letak yang rapi, warna yang menarik, dan elemen visual yang mendukung pengalaman pengguna yang lebih baik.
+    - Saya menambahkan elemen seperti ikon, animasi, dan efek hover untuk meningkatkan interaktivitas dan estetika halaman, sehingga pengguna merasa lebih nyaman dan tertarik saat menggunakan aplikasi.
+
+3. Kustomisasi Halaman Daftar Product
+    - Saya membuat halaman daftar product yang lebih menarik dan responsif, memastikan tampilannya tetap baik di berbagai ukuran layar. Hal ini penting agar pengguna dapat mengakses informasi product dengan mudah, baik dari desktop maupun perangkat mobile.
+    - Jika belum ada product yang tersimpan, halaman akan menampilkan gambar dan pesan informatif yang memberi tahu pengguna bahwa belum ada product yang terdaftar. Ini membantu menghindari kebingungan dan memberikan informasi yang jelas kepada pengguna.
+    - Jika sudah ada product yang tersimpan, detail setiap product ditampilkan dalam bentuk card yang menarik. Saya memastikan desain card berbeda dari tutorial yang ada untuk memberikan sentuhan personal dan unik pada aplikasi.
+    - Setiap card product dilengkapi dengan dua button: satu untuk mengedit product dan satu lagi untuk menghapus product. Button ini mudah diakses dan terlihat jelas, memudahkan pengguna dalam mengelola product mereka.
+
+4. Pembuatan Navigation Bar (Navbar) yang Responsif
+    - Saya mendesain navbar yang mencakup link ke fitur-fitur utama aplikasi, seperti login, register, tambah product, dan daftar product. Navbar ini dirancang agar responsif, sehingga tampilannya menyesuaikan dengan ukuran layar perangkat yang digunakan, baik itu desktop, tablet, atau ponsel.
+    - Saya menambahkan elemen visual seperti dropdown menu dan ikon untuk meningkatkan navigasi dan pengalaman pengguna. Dengan navbar yang responsif, pengguna dapat dengan mudah mengakses berbagai fitur aplikasi tanpa kesulitan, terlepas dari perangkat yang mereka gunakan.
