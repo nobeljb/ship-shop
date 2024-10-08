@@ -546,3 +546,185 @@ Berikut adalah versi yang lebih singkat dengan penjelasan dan mengganti `mood_en
 4. Pembuatan Navigation Bar (Navbar) yang Responsif
     - Saya mendesain navbar yang mencakup link ke fitur-fitur utama aplikasi, seperti login, register, tambah product, dan daftar product. Navbar ini dirancang agar responsif, sehingga tampilannya menyesuaikan dengan ukuran layar perangkat yang digunakan, baik itu desktop, tablet, atau ponsel.
     - Saya menambahkan elemen visual seperti dropdown menu dan ikon untuk meningkatkan navigasi dan pengalaman pengguna. Dengan navbar yang responsif, pengguna dapat dengan mudah mengakses berbagai fitur aplikasi tanpa kesulitan, terlepas dari perangkat yang mereka gunakan.
+
+
+## Manfaat Penggunaan JavaScript dalam Pengembangan Aplikasi Web:
+
+- Interaktivitas: JavaScript memungkinkan halaman web menjadi dinamis dan interaktif. Dalam konteks kode yang Anda gunakan, JavaScript berfungsi untuk menampilkan modal, menambahkan produk baru menggunakan AJAX, serta mengupdate tampilan produk tanpa harus me-refresh halaman secara keseluruhan.
+- AJAX untuk Komunikasi Asinkron: JavaScript dapat mengirim permintaan ke server dan memperbarui sebagian halaman tanpa memuat ulang seluruhnya. Pada 'Ship Shop', fitur penambahan produk dengan AJAX memungkinkan pengguna menambahkan produk baru ke halaman tanpa kehilangan data atau interaksi yang sudah ada.
+- Manipulasi DOM: JavaScript memungkinkan pengembang untuk mengakses dan memanipulasi elemen-elemen HTML secara dinamis. Seperti di kode Anda, JavaScript digunakan untuk memperbarui daftar produk (product_cards) dengan konten baru yang diambil dari server.
+
+## Fungsi await ketika Menggunakan fetch():
+
+- await digunakan untuk menunggu hasil dari operasi asinkron (seperti fetch()) sebelum melanjutkan eksekusi kode berikutnya. Ketika kita melakukan fetch(), JavaScript akan memulai permintaan HTTP secara asinkron, yang artinya fungsi tersebut akan berjalan di latar belakang. Dengan menggunakan await, kita memastikan bahwa kode setelah fetch() tidak akan dieksekusi hingga hasil dari permintaan HTTP tersebut diterima.
+- Jika kita tidak menggunakan await, kode berikutnya akan dijalankan segera tanpa menunggu hasil dari fetch(). Ini bisa menyebabkan masalah, seperti mencoba mengakses data yang belum ada atau belum diterima dari server.
+
+## Mengapa Perlu Menggunakan csrf_exempt pada View untuk AJAX POST:
+
+- Django memiliki proteksi CSRF (Cross-Site Request Forgery) untuk mencegah permintaan berbahaya dari domain lain. Dalam permintaan AJAX POST, token CSRF harus dikirim agar Django dapat memvalidasi bahwa permintaan berasal dari sumber yang sah.
+- Namun, dalam beberapa kasus, jika permintaan AJAX tidak mengirim token CSRF atau permintaan tidak memerlukan validasi CSRF (misalnya, API terbuka), kita bisa menggunakan @csrf_exempt untuk mengecualikan view dari pengecekan token CSRF. Ini berguna ketika AJAX POST dilakukan tanpa perlu memeriksa keamanan CSRF.
+
+## Mengapa Pembersihan Data Input Pengguna Dilakukan di Backend (Backend Validation):
+
+- Keamanan: Meski pembersihan data di frontend membantu menjaga pengalaman pengguna yang baik, manipulasi atau bypassing dapat dilakukan melalui alat seperti developer tools di browser. Jika hanya mengandalkan validasi di frontend, pengguna jahat masih dapat mengirimkan data yang tidak valid atau berbahaya secara langsung ke server.
+- Integritas Data: Backend selalu harus melakukan validasi data karena itu adalah lapisan yang paling tepercaya dan dapat dikontrol sepenuhnya oleh pengembang. Misalnya, jika data dari frontend dimanipulasi atau ada bug pada sisi frontend, backend masih dapat memvalidasi dan menolak data yang tidak valid.
+- Consistency Across Multiple Clients: Validasi di backend memastikan bahwa semua client yang berinteraksi dengan aplikasi—baik melalui browser, aplikasi mobile, atau API—mengirimkan data yang bersih dan valid.
+
+## Implementasi Checklist Secara Step-by-Step
+
+### Implementasi AJAX GET dan POST untuk Manajemen Produk
+
+#### 1. **Penjelasan Hubungan antar File**
+- **`main.html`**: Ini adalah template utama yang berisi tampilan halaman produk. Di sini, kita memiliki elemen-elemen HTML seperti tombol untuk membuka modal, form untuk menambah produk, dan area untuk menampilkan daftar produk (product cards). JavaScript di dalam file ini akan menangani interaksi AJAX untuk GET (mengambil data produk) dan POST (menambah produk baru).
+  
+- **`forms.py`**: File ini berisi form Django yang digunakan untuk memvalidasi dan memproses input dari pengguna saat menambah produk. `ProductForm` berfungsi sebagai form untuk produk yang akan digunakan dalam modal di `main.html`.
+
+- **`urls.py`**: File ini mendefinisikan URL yang tersedia dalam aplikasi. Misalnya, kita memiliki endpoint `/create-product-ajax` yang digunakan untuk menerima permintaan AJAX POST untuk menambah produk, dan `/json/` untuk permintaan AJAX GET yang mengembalikan daftar produk dalam format JSON.
+
+- **`views.py`**: File ini mengelola logika di balik layar. Fungsi seperti `show_json()` akan mengembalikan data produk dalam format JSON untuk AJAX GET, sedangkan `add_product_ajax()` digunakan untuk memproses permintaan AJAX POST dari form yang ada di modal dan menambah produk baru ke dalam basis data.
+
+### **Implementasi AJAX GET untuk Mengambil Data Produk**
+
+1. **Modifikasi JavaScript di `main.html` untuk AJAX GET**  
+   Fungsi `refreshProductEntries()` akan menangani pengambilan data produk dari endpoint `/json/` dan memperbarui tampilan kartu produk secara dinamis tanpa memuat ulang halaman.
+
+```javascript
+async function getProduct() {
+    const response = await fetch("{% url 'main:show_json' %}");
+    return response.json();  // Mengambil data produk dalam format JSON
+}
+
+async function refreshProductEntries() {
+    const productEntries = await getProduct();  // Mengambil produk melalui AJAX
+    let htmlString = "";
+    let classNameString = "";
+
+    if (productEntries.length === 0) {
+        classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";  // Tampilan saat tidak ada produk
+        htmlString = `
+            <div class="${classNameString}">
+                <img src="{% static 'image/sedih-banget.png' %}" alt="No Products" class="w-32 h-32 mb-4"/>
+                <p class="text-center text-gray-600 mt-4">Tidak ada produk yang tersedia.</p>
+            </div>
+        `;
+    } else {
+        classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full";  // Tampilan jika produk ada
+        productEntries.forEach((item) => {
+            const name = DOMPurify.sanitize(item.fields.name);
+            const description = DOMPurify.sanitize(item.fields.description);
+            htmlString += `
+            <div class="relative break-inside-avoid">
+                <div class="relative top-5 bg-green-100 shadow-md rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-green-300 transform rotate-0 hover:rotate-1 transition-transform duration-300">
+                    <div class="bg-green-200 text-gray-800 p-4 rounded-t-lg border-b-2 border-green-300">
+                        <h3 class="font-bold text-xl mb-2">${name}</h3>
+                        <p class="text-gray-600">Jumlah: ${item.fields.quantity}</p>
+                        <p class="text-gray-600">${description}</p>
+                    </div>
+                    <div class="p-4">
+                        <p class="font-bold">Harga: ${item.fields.price}</p>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+    }
+
+    document.getElementById("product_cards").className = classNameString;  // Set kelas HTML untuk tampilan produk
+    document.getElementById("product_cards").innerHTML = htmlString;  // Tampilkan produk di halaman
+}
+
+// Jalankan fungsi ini untuk mengambil produk saat halaman pertama kali dibuka
+refreshProductEntries();
+```
+
+### **Implementasi AJAX POST untuk Menambah Produk**
+
+1. **Form dan Modal di `main.html`**  
+   Modal yang di-trigger oleh tombol di halaman utama untuk menambah produk baru. Form ini menggunakan AJAX POST untuk mengirim data tanpa reload halaman.
+
+```html
+<button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-green-700" onclick="showModal();">
+    Tambah Produk Baru via AJAX
+</button>
+```
+
+2. **Penanganan Form AJAX POST di JavaScript (`main.html`)**  
+   Fungsi `addProduct()` bertanggung jawab untuk mengirimkan data form ke server secara asinkron dengan metode POST dan menutup modal serta menghapus input setelah berhasil.
+
+```javascript
+async function addProduct() {
+    const response = await fetch("{% url 'main:add_product_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.querySelector('#productEntryForm')),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    });
+
+    if (response.ok) {
+        refreshProductEntries();  // Memperbarui produk setelah produk baru ditambahkan
+        document.getElementById("productEntryForm").reset();  // Mengosongkan form
+        hideModal();  // Menutup modal
+    } else {
+        console.error('Gagal menambah produk:', response.statusText);
+    }
+}
+```
+
+3. **Menutup Modal dan Membersihkan Form**  
+   Setelah produk berhasil ditambahkan, modal harus ditutup dan form harus dibersihkan.
+
+```javascript
+function hideModal() {
+    modalContent.classList.remove('opacity-100', 'scale-100');
+    modalContent.classList.add('opacity-0', 'scale-95');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 150);
+}
+
+document.getElementById("cancelButton").addEventListener("click", hideModal);
+document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+
+document.getElementById('productEntryForm').onsubmit = function(e) {
+    e.preventDefault();
+    addProduct();
+    return false;
+};
+```
+
+4. **Endpoint AJAX POST di `views.py`**  
+   Fungsi ini akan menerima data dari form, memprosesnya, dan menambah produk ke basis data.
+
+```python
+@csrf_exempt
+@require_POST
+def add_product_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = request.POST.get("price")
+    description = strip_tags(request.POST.get("description"))
+    quantity = request.POST.get("quantity")
+    user = request.user
+
+    new_product = Product(
+        name=name, price=price,
+        description=description, quantity=quantity,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
+```
+
+5. **Penambahan Path untuk AJAX POST di `urls.py`**  
+   URL untuk menangani permintaan POST ditambahkan di sini.
+
+```python
+path('create-product-ajax', add_product_ajax, name='add_product_ajax'),
+```
+
+- **`main.html`** berfungsi untuk menampilkan produk dan menangani interaksi pengguna seperti menambah produk baru melalui form modal dengan AJAX POST.
+- **`forms.py`** memastikan bahwa input yang diterima dari pengguna divalidasi sebelum ditambahkan ke dalam basis data.
+- **`urls.py`** mendefinisikan URL yang mengarahkan ke fungsi view yang menangani permintaan GET dan POST.
+- **`views.py`** mengelola logika untuk menampilkan produk (AJAX GET) dan menambah produk baru (AJAX POST) ke dalam basis data secara asinkron.
